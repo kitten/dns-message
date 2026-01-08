@@ -1,6 +1,7 @@
 import { type Packet, packet } from './packets';
 
 export type {
+  BaseAnswer,
   NsAnswer,
   AAnswer,
   AAAAAnswer,
@@ -19,6 +20,8 @@ export type {
   DsAnswer,
   NaptrAnswer,
   TlsaAnswer,
+  SvcbAnswer,
+  OptAnswer,
   PtrAnswer,
   CnameAnswer,
   DnameAnswer,
@@ -36,6 +39,9 @@ export type {
   UnknownOpt,
   PacketOpt,
 } from './options';
+
+export type { SvcParamCode, SvcParams } from './svcparams';
+
 export type { Packet } from './packets';
 export type { Question } from './questions';
 export * from './constants';
