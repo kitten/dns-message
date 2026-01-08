@@ -86,35 +86,28 @@ export const name: Encoder<string> = {
     }
     return offset + 1;
   },
-  read(view, position) {
-    let { offset, length } = position;
+  read(view, outerPosition) {
     const labels: string[] = [];
-    while (position.offset - offset < length) {
-      const labelLength = view.getUint8(position.offset);
-      advance(position, 1);
+    let maxOffset = outerPosition.offset;
+    let innerPosition = outerPosition;
+    while (true) {
+      const labelLength = view.getUint8(innerPosition.offset);
       if (labelLength === 0) {
+        advance(innerPosition, 1);
         break;
       } else if ((labelLength & 0xc0) === 0) {
-        const label = textDecoder.decode(
-          sliceView(view, position, labelLength)
-        );
-        labels.push(label.replace(/\./g, '\\.'));
-      } else if ((labelLength & 0xc0) === 0xc0) {
-        // RFC 1035, section 4.1.4 states:
-        // "[...] an entire domain name or a list of labels at the end of a domain name
-        // is replaced with a pointer to a prior occurance (sic) of the same name."
-        const bytesRead = position.offset - offset;
-        offset = position.offset;
-        length = position.length;
-        // Set position to jump target with synthetic length
-        position.offset = view.getUint16(position.offset - 1) - 0xc000;
-        position.length = length - bytesRead;
-        const jumpName = name.read(view, position);
-        if (jumpName && jumpName !== '.') labels.push(jumpName);
-        // Restore original position
-        position.offset = offset;
-        position.length = length;
-        break;
+        advance(innerPosition, 1);
+        const label = sliceView(view, innerPosition, labelLength);
+        labels.push(textDecoder.decode(label).replace(/\./g, '\\.'));
+      } else {
+        const jumpTo = view.getUint16(innerPosition.offset) - 0xc000;
+        advance(innerPosition, 2);
+        if (jumpTo < maxOffset) {
+          innerPosition = { offset: (maxOffset = jumpTo), length: 0 };
+        } else {
+          advance(innerPosition, 2);
+          break;
+        }
       }
     }
     return labels.join('.') || '.';

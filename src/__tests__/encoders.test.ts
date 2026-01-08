@@ -74,9 +74,9 @@ describe('name', () => {
 
   it('supports label references', () => {
     const view = utils.view(
-      `03 ${utils.u2h('abc')} c006 03 ${utils.u2h('def')} 00`
+      `03 ${utils.u2h('def')} 00 03 ${utils.u2h('abc')} c000`
     );
-    const output = name.read(view, { offset: 0, length: view.byteLength });
+    const output = name.read(view, { offset: 5, length: view.byteLength });
     expect(output).toBe('abc.def');
   });
 
