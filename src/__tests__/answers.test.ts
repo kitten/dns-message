@@ -263,13 +263,13 @@ describe('answerNsec3', () => {
   const nsec3Fixtures = utils.fixtures(answerNsec3, [
     {
       case: 'example',
-      output: `0016 01 80 000a 04 ${utils.u2h('aabb')} 09 ${utils.u2h('localhost')} 00 0160`,
+      output: '000b 01 80 000a 0101 0102 000160',
       input: {
         algorithm: 1,
         flags: 128,
         iterations: 10,
-        salt: 'aabb',
-        nextDomain: 'localhost',
+        salt: new Uint8Array([1]),
+        nextDomain: new Uint8Array([2]),
         rrtypes: [RecordType.A, RecordType.NS].sort(),
       },
     },
