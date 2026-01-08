@@ -1,9 +1,9 @@
-export const enum PacketType {
+export enum PacketType {
   QUERY = 0,
   RESPONSE = 1 << 15,
 }
 
-export const enum RecordType {
+export enum RecordType {
   A = 1,
   NS = 2,
   CNAME = 5,
@@ -52,7 +52,7 @@ export const enum RecordType {
   DLV = 32769,
 }
 
-export const enum RecordClass {
+export enum RecordClass {
   IN = 1,
   CS = 2,
   CH = 3,
@@ -60,7 +60,7 @@ export const enum RecordClass {
   ANY = 255,
 }
 
-export const enum PacketFlag {
+export enum PacketFlag {
   NOERR = 0,
   FORMERR = 1,
   SERVFAIL = 2,
@@ -94,7 +94,7 @@ export type PacketRType =
   | PacketFlag.NOTAUTH
   | PacketFlag.NOTZONE;
 
-export const enum OptCode {
+export enum OptCode {
   OPTION_0 = 0,
   LLQ = 1,
   UL = 2,
