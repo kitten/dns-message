@@ -53,7 +53,7 @@ export function streamDecode(bytes: ArrayBufferView | ArrayBufferLike): Packet {
     'buffer' in bytes
       ? new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength)
       : new DataView(bytes);
-  const length = Math.min(view.byteLength, view.getUint16(0)) - 2;
+  const length = Math.min(view.byteLength - 2, view.getUint16(0));
   return packet.read(view, { offset: 2, length });
 }
 
@@ -71,6 +71,6 @@ export function streamEncode(input: Packet): Uint8Array {
   const buffer = new ArrayBuffer(packet.bytes(input) + 2);
   const view = new DataView(buffer);
   const length = packet.write(view, 2, input);
-  view.setUint16(0, length);
+  view.setUint16(0, length - 2);
   return new Uint8Array(buffer, 0, length);
 }
