@@ -1,5 +1,12 @@
 # dns-message
 
+## 1.0.2
+
+### Patch Changes
+
+- Add typings workaround due to `const enum` not being transpiled to `enum` in typings
+  Submitted by [@kitten](https://github.com/kitten) (See [#9](https://github.com/kitten/dns-message/pull/9))
+
 ## 1.0.1
 
 ### Patch Changes
