@@ -176,8 +176,8 @@ describe('streamEncode', () => {
     };
     const result = streamEncode(packet);
     const lengthPrefix = (result[0] << 8) | result[1];
-    expect(lengthPrefix).toBe(encodingLength(packet) + 2);
-    expect(result.length).toBe(lengthPrefix);
+    expect(lengthPrefix).toBe(encodingLength(packet));
+    expect(result.length).toBe(lengthPrefix + 2);
     expect(utils.toHex(result.slice(2))).toBe('123401000000000000000000');
   });
 
@@ -196,8 +196,8 @@ describe('streamEncode', () => {
     };
     const result = streamEncode(packet);
     const lengthPrefix = (result[0] << 8) | result[1];
-    expect(lengthPrefix).toBe(encodingLength(packet) + 2);
-    expect(result.length).toBe(lengthPrefix);
+    expect(lengthPrefix).toBe(encodingLength(packet));
+    expect(result.length).toBe(lengthPrefix + 2);
   });
 
   it('returns Uint8Array', () => {
