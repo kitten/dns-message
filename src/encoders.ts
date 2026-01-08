@@ -34,6 +34,9 @@ const utf8ByteLength =
         return length;
       };
 
+const LABEL_LIMIT = 63;
+const NAME_LIMIT = 255;
+
 export const name: Encoder<string> = {
   bytes(str) {
     let length = 2;
@@ -45,7 +48,12 @@ export const name: Encoder<string> = {
       default:
         if (str[0] === '.') length--;
         if (str[str.length - 1] === '.') length--;
-        return length + str.replace(/\\\./g, '.').length;
+        length += str.replace(/\\\./g, '.').length;
+        if (length > NAME_LIMIT)
+          throw new RangeError(
+            `Name "${str}" is above ${NAME_LIMIT} byte limit.`
+          );
+        return length;
     }
   },
   write(view, offset, str) {
@@ -59,7 +67,13 @@ export const name: Encoder<string> = {
       while (endIdx > -1 && encoded[endIdx - 1] === 92 /*'\\'*/)
         endIdx = encoded.indexOf(46 /*'.'*/, endIdx + 1);
       if (endIdx === -1) endIdx = encoded.byteLength;
-      if (endIdx === startIdx) continue;
+      if (endIdx === startIdx) {
+        continue;
+      } else if (endIdx - startIdx > LABEL_LIMIT) {
+        throw new RangeError(
+          `Label in "${str}" is above ${LABEL_LIMIT} byte limit.`
+        );
+      }
       let byteIdx = offset + 1;
       for (let idx = startIdx; idx < endIdx; idx++) {
         if (encoded[idx] === 92 /*'\\'*/ && encoded[idx + 1] === 46 /*'.'*/)
