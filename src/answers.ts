@@ -142,7 +142,7 @@ export const answerCaa: Encoder<CaaData> = withRDLength({
   },
   write(view, offset, data) {
     let flags = data.flags || 0;
-    if (data.issuerCritical) flags = ISSUER_CRITICAL;
+    if (data.issuerCritical) flags |= ISSUER_CRITICAL;
     view.setUint8(offset, flags);
     offset = string.write(view, offset + 1, data.tag);
     offset = bytes.write(view, offset, data.value);
