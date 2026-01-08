@@ -326,8 +326,9 @@ export const array = <T>(encoder: Encoder<T>): Encoder<T[]> => ({
 });
 
 export const advance = (position: ReadPosition, bytes: number) => {
-  position.offset += bytes;
-  position.length -= bytes;
+  position.offset += bytes | 0;
+  position.length -= bytes | 0;
+  position.length &= ~(position.length >> 31);
 };
 
 export const encodeIntoBuffer = <T>(
