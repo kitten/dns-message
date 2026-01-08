@@ -1,5 +1,5 @@
 import { RecordClass, RecordType } from './constants';
-import { Encoder, advance } from './encoders';
+import { Encoder, advance, octets } from './encoders';
 import { option, PacketOpt } from './options';
 import { svcParams, SvcParams } from './svcparams';
 import {
@@ -382,8 +382,8 @@ export interface Nsec3Data {
   algorithm: number;
   flags: number;
   iterations: number;
-  salt: string;
-  nextDomain: string;
+  salt: Uint8Array;
+  nextDomain: Uint8Array;
   rrtypes: RecordType[];
 }
 
@@ -395,8 +395,8 @@ export interface Nsec3Answer extends BaseAnswer {
 export const answerNsec3: Encoder<Nsec3Data> = withRDLength({
   bytes(data) {
     return (
-      string.bytes(data.salt) +
-      string.bytes(data.nextDomain) +
+      octets.bytes(data.salt) +
+      octets.bytes(data.nextDomain) +
       typeBitmap.bytes(data.rrtypes) +
       4
     );
@@ -405,8 +405,8 @@ export const answerNsec3: Encoder<Nsec3Data> = withRDLength({
     view.setUint8(offset, data.algorithm);
     view.setUint8(offset + 1, data.flags);
     view.setUint16(offset + 2, data.iterations);
-    offset = string.write(view, offset + 4, data.salt);
-    offset = string.write(view, offset, data.nextDomain);
+    offset = octets.write(view, offset + 4, data.salt);
+    offset = octets.write(view, offset, data.nextDomain);
     offset = typeBitmap.write(view, offset, data.rrtypes);
     return offset;
   },
@@ -419,8 +419,8 @@ export const answerNsec3: Encoder<Nsec3Data> = withRDLength({
       algorithm,
       flags,
       iterations,
-      salt: string.read(view, position),
-      nextDomain: string.read(view, position),
+      salt: octets.read(view, position),
+      nextDomain: octets.read(view, position),
       rrtypes: typeBitmap.read(view, position),
     };
   },
