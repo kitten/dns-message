@@ -630,17 +630,17 @@ export const answerOpt: Encoder<PacketOpt[]> = withRDLength(array(option));
 
 export interface PtrAnswer extends BaseAnswer {
   type: RecordType.PTR;
-  data: Uint8Array | string;
+  data: string;
 }
 
 export interface CnameAnswer extends BaseAnswer {
   type: RecordType.CNAME;
-  data: Uint8Array | string;
+  data: string;
 }
 
 export interface DnameAnswer extends BaseAnswer {
   type: RecordType.DNAME;
-  data: Uint8Array | string;
+  data: string;
 }
 
 export interface NullAnswer extends BaseAnswer {
@@ -749,6 +749,10 @@ export const answer: Encoder<Answer> = {
         return byteLength + answerSvcb.bytes(answer.data);
       case RecordType.CAA:
         return byteLength + answerCaa.bytes(answer.data);
+      case RecordType.PTR:
+      case RecordType.CNAME:
+      case RecordType.DNAME:
+        return byteLength + answerName.bytes(answer.data);
       default:
         return byteLength + answerBytes.bytes(answer.data);
     }
@@ -812,6 +816,10 @@ export const answer: Encoder<Answer> = {
         return answerSvcb.write(view, offset, answer.data);
       case RecordType.CAA:
         return answerCaa.write(view, offset, answer.data);
+      case RecordType.PTR:
+      case RecordType.CNAME:
+      case RecordType.DNAME:
+        return answerName.write(view, offset, answer.data);
       default:
         return answerBytes.write(view, offset, answer.data);
     }
@@ -903,6 +911,11 @@ export const answer: Encoder<Answer> = {
         return answer;
       case RecordType.CAA:
         answer.data = answerCaa.read(view, position);
+        return answer;
+      case RecordType.PTR:
+      case RecordType.CNAME:
+      case RecordType.DNAME:
+        answer.data = answerName.read(view, position);
         return answer;
       default:
         answer.data = answerBytes.read(view, position);
