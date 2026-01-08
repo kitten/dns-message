@@ -447,6 +447,42 @@ describe('answer', () => {
         data: '1.1.1.1',
       },
     },
+    {
+      case: 'CNAME',
+      output: `06 ${utils.u2h('source')} 00 00050001000000000008 06 ${utils.u2h('target')} 00`,
+      input: {
+        name: 'source',
+        type: RecordType.CNAME,
+        class: RecordClass.IN,
+        ttl: 0,
+        flush: false,
+        data: 'target',
+      },
+    },
+    {
+      case: 'PTR',
+      output: `06 ${utils.u2h('source')} 00 000c0001000000000008 06 ${utils.u2h('target')} 00`,
+      input: {
+        name: 'source',
+        type: RecordType.PTR,
+        class: RecordClass.IN,
+        ttl: 0,
+        flush: false,
+        data: 'target',
+      },
+    },
+    {
+      case: 'DNAME',
+      output: `06 ${utils.u2h('source')} 00 00270001000000000008 06 ${utils.u2h('target')} 00`,
+      input: {
+        name: 'source',
+        type: RecordType.DNAME,
+        class: RecordClass.IN,
+        ttl: 0,
+        flush: false,
+        data: 'target',
+      },
+    },
   ]);
 
   answerFixtures.test();
