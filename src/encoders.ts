@@ -134,6 +134,28 @@ export const bytes: Encoder<Uint8Array | string, Uint8Array> = {
   },
 };
 
+export const octets: Encoder<Uint8Array> = {
+  bytes(data) {
+    return data.byteLength + 1;
+  },
+  write(view, offset, bytes) {
+    view.setUint8(offset++, bytes.byteLength);
+    const target = new Uint8Array(
+      view.buffer,
+      view.byteOffset + offset,
+      bytes.byteLength
+    );
+    target.set(bytes);
+    offset += bytes.byteLength;
+    return offset;
+  },
+  read(view, position) {
+    const length = view.getUint8(position.offset);
+    advance(position, 1);
+    return sliceView(view, position, length);
+  },
+};
+
 export const string: Encoder<string> = {
   bytes(str) {
     return utf8ByteLength(str) + 1;
