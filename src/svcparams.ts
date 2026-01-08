@@ -72,6 +72,7 @@ export const svcParams: Encoder<SvcParams> = {
     }
     if (params['no-default-alpn']) {
       view.setUint16(offset, SvcParamCode.NoDefaultAlpn);
+      view.setUint16(offset + 2, 0);
       offset += 4;
     }
     if (params.port != null) {

@@ -105,7 +105,6 @@ export const name: Encoder<string> = {
         if (jumpTo < maxOffset) {
           innerPosition = { offset: (maxOffset = jumpTo), length: 0 };
         } else {
-          advance(innerPosition, 2);
           break;
         }
       }
