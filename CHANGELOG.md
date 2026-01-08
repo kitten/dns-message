@@ -1,5 +1,12 @@
 # dns-message
 
+## 1.0.3
+
+### Patch Changes
+
+- Add missing exports for types
+  Submitted by [@kitten](https://github.com/kitten) (See [#11](https://github.com/kitten/dns-message/pull/11))
+
 ## 1.0.2
 
 ### Patch Changes
