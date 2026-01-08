@@ -35,26 +35,18 @@ const utf8ByteLength =
       };
 
 const LABEL_LIMIT = 63;
-const NAME_LIMIT = 255;
+const U8_LIMIT = 255;
 
 export const name: Encoder<string> = {
   bytes(str) {
     let length = 2;
-    switch (str) {
-      case '':
-      case '.':
-      case '..':
-        return 1;
-      default:
-        if (str[0] === '.') length--;
-        if (str[str.length - 1] === '.') length--;
-        length += str.replace(/\\\./g, '.').length;
-        if (length > NAME_LIMIT)
-          throw new RangeError(
-            `Name "${str}" is above ${NAME_LIMIT} byte limit.`
-          );
-        return length;
-    }
+    if (str === '' || str === '.' || str === '..') return 1;
+    if (str[0] === '.') length--;
+    if (str[str.length - 1] === '.') length--;
+    length += str.replace(/\\\./g, '.').length;
+    if (length > U8_LIMIT)
+      throw new RangeError(`Name "${str}" is above ${U8_LIMIT} byte limit.`);
+    return length;
   },
   write(view, offset, str) {
     const encoded = textEncoder.encode(str);
@@ -136,6 +128,8 @@ export const bytes: Encoder<Uint8Array | string, Uint8Array> = {
 
 export const octets: Encoder<Uint8Array> = {
   bytes(data) {
+    if (data.byteLength > U8_LIMIT)
+      throw new RangeError(`Data is above ${U8_LIMIT} byte limit.`);
     return data.byteLength + 1;
   },
   write(view, offset, bytes) {
@@ -158,7 +152,10 @@ export const octets: Encoder<Uint8Array> = {
 
 export const string: Encoder<string> = {
   bytes(str) {
-    return utf8ByteLength(str) + 1;
+    const length = utf8ByteLength(str);
+    if (length > U8_LIMIT)
+      throw new RangeError(`String "${str}" is above ${U8_LIMIT} byte limit.`);
+    return length + 1;
   },
   write(view, offset, data) {
     const buffer = textEncoder.encode(data);
