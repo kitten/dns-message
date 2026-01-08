@@ -1,6 +1,6 @@
 {
   "name": "dns-message",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Encodes and decodes DNS message packets (derivative of dns-packet)",
   "author": "Phil Pluckthun <phil@kitten.sh>",
   "source": "./src/index.ts",
