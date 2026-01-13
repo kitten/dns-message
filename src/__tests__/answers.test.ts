@@ -22,6 +22,7 @@ import {
   answerSvcb,
   answerOpt,
   answer,
+  compareAnswers,
 } from '../answers';
 
 describe('answerTxt', () => {
@@ -486,4 +487,177 @@ describe('answer', () => {
   ]);
 
   answerFixtures.test();
+});
+
+describe('compareAnswers', () => {
+  it('lexicographically sorts by class', () => {
+    expect(
+      compareAnswers(
+        {
+          name: 'x',
+          type: RecordType.CNAME,
+          class: RecordClass.CH,
+          ttl: 0,
+          data: 'a',
+        },
+        {
+          name: 'x',
+          type: RecordType.CNAME,
+          class: RecordClass.CS,
+          ttl: 0,
+          data: 'a',
+        }
+      )
+    ).toBe(1);
+    expect(
+      compareAnswers(
+        {
+          name: 'x',
+          type: RecordType.CNAME,
+          class: RecordClass.CS,
+          ttl: 0,
+          data: 'a',
+        },
+        {
+          name: 'x',
+          type: RecordType.CNAME,
+          class: RecordClass.CH,
+          ttl: 0,
+          data: 'a',
+        }
+      )
+    ).toBe(-1);
+    expect(
+      compareAnswers(
+        {
+          name: 'x',
+          type: RecordType.CNAME,
+          class: RecordClass.CH,
+          ttl: 0,
+          data: 'a',
+        },
+        {
+          name: 'x',
+          type: RecordType.CNAME,
+          class: RecordClass.CH,
+          ttl: 0,
+          data: 'a',
+        }
+      )
+    ).toBe(0);
+  });
+
+  it('lexicographically sorts by type', () => {
+    expect(
+      compareAnswers(
+        {
+          name: 'x',
+          type: RecordType.CNAME,
+          class: RecordClass.CH,
+          ttl: 0,
+          data: 'a',
+        },
+        {
+          name: 'x',
+          type: RecordType.DNAME,
+          class: RecordClass.CH,
+          ttl: 0,
+          data: 'b',
+        }
+      )
+    ).toBe(-34);
+    expect(
+      compareAnswers(
+        {
+          name: 'x',
+          type: RecordType.DNAME,
+          class: RecordClass.CH,
+          ttl: 0,
+          data: 'x',
+        },
+        {
+          name: 'x',
+          type: RecordType.CNAME,
+          class: RecordClass.CH,
+          ttl: 0,
+          data: 'x',
+        }
+      )
+    ).toBe(34);
+    expect(
+      compareAnswers(
+        {
+          name: 'x',
+          type: RecordType.CNAME,
+          class: RecordClass.CH,
+          ttl: 0,
+          data: 'x',
+        },
+        {
+          name: 'x',
+          type: RecordType.CNAME,
+          class: RecordClass.CH,
+          ttl: 0,
+          data: 'x',
+        }
+      )
+    ).toBe(0);
+  });
+
+  it('lexicographically sorts by RData', () => {
+    expect(
+      compareAnswers(
+        {
+          name: 'x',
+          type: RecordType.CNAME,
+          class: RecordClass.CH,
+          ttl: 0,
+          data: 'a',
+        },
+        {
+          name: 'x',
+          type: RecordType.CNAME,
+          class: RecordClass.CH,
+          ttl: 0,
+          data: 'b',
+        }
+      )
+    ).toBe(-1);
+    expect(
+      compareAnswers(
+        {
+          name: 'x',
+          type: RecordType.CNAME,
+          class: RecordClass.CH,
+          ttl: 0,
+          data: 'b',
+        },
+        {
+          name: 'x',
+          type: RecordType.CNAME,
+          class: RecordClass.CH,
+          ttl: 0,
+          data: 'a',
+        }
+      )
+    ).toBe(1);
+    expect(
+      compareAnswers(
+        {
+          name: 'x',
+          type: RecordType.CNAME,
+          class: RecordClass.CH,
+          ttl: 0,
+          data: 'x',
+        },
+        {
+          name: 'x',
+          type: RecordType.CNAME,
+          class: RecordClass.CH,
+          ttl: 0,
+          data: 'x',
+        }
+      )
+    ).toBe(0);
+  });
 });

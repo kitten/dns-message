@@ -1,5 +1,5 @@
 import { RecordClass, RecordType } from './constants';
-import { Encoder, advance, octets } from './encoders';
+import { Encoder, advance, encodeIntoBuffer, octets } from './encoders';
 import { option, PacketOpt } from './options';
 import { svcParams, SvcParams } from './svcparams';
 import {
@@ -922,4 +922,102 @@ export const answer: Encoder<Answer> = {
         return answer;
     }
   },
+};
+
+export const compareAnswers = (a: Answer, b: Answer): number => {
+  if (a.type === RecordType.OPT || b.type === RecordType.OPT) {
+    return 0;
+  }
+  const aClass = a.class || RecordClass.IN;
+  const bClass = b.class || RecordClass.IN;
+  if (aClass !== bClass) {
+    return aClass - bClass;
+  } else if (a.type !== b.type) {
+    return a.type - b.type;
+  }
+  let encoder: Encoder<unknown>;
+  switch (a.type) {
+    case RecordType.A:
+      encoder = answerIPv4;
+      break;
+    case RecordType.NS:
+      encoder = answerName;
+      break;
+    case RecordType.SOA:
+      encoder = answerSoa;
+      break;
+    case RecordType.HINFO:
+      encoder = answerHInfo;
+      break;
+    case RecordType.MX:
+      encoder = answerMx;
+      break;
+    case RecordType.TXT:
+      encoder = answerTxt;
+      break;
+    case RecordType.RP:
+      encoder = answerRp;
+      break;
+    case RecordType.AAAA:
+      encoder = answerIPv6;
+      break;
+    case RecordType.SRV:
+      encoder = answerSrv;
+      break;
+    case RecordType.NAPTR:
+      encoder = answerNaptr;
+      break;
+    case RecordType.DS:
+      encoder = answerDs;
+      break;
+    case RecordType.SSHFP:
+      encoder = answerSshfp;
+      break;
+    case RecordType.RRSIG:
+      encoder = answerRrsig;
+      break;
+    case RecordType.NSEC:
+      encoder = answerNsec;
+      break;
+    case RecordType.DNSKEY:
+      encoder = answerDnskey;
+      break;
+    case RecordType.NSEC3:
+      encoder = answerNsec3;
+      break;
+    case RecordType.TLSA:
+      encoder = answerTlsa;
+      break;
+    case RecordType.SVCB:
+    case RecordType.HTTPS:
+      encoder = answerSvcb;
+      break;
+    case RecordType.CAA:
+      encoder = answerCaa;
+      break;
+    case RecordType.PTR:
+    case RecordType.CNAME:
+    case RecordType.DNAME:
+      encoder = answerName;
+      break;
+    default:
+      encoder = answerBytes;
+  }
+  const rdataA = encodeIntoBuffer(encoder, a.data);
+  const rdataB = encodeIntoBuffer(encoder, b.data);
+  const byteLength =
+    rdataA.byteLength < rdataB.byteLength
+      ? rdataA.byteLength
+      : rdataB.byteLength;
+  for (let idx = 2; idx < byteLength; idx++) {
+    const diff = rdataA[idx] - rdataB[idx];
+    if (diff !== 0) {
+      return diff < 0 ? -1 : 1;
+    }
+  }
+  return rdataA.byteLength !== rdataB.byteLength
+    ? rdataA.byteLength < rdataB.byteLength
+      ? -1
+      : 1
+    : 0;
 };

@@ -46,6 +46,8 @@ export type { Packet } from './packets';
 export type { Question } from './questions';
 export * from './constants';
 
+export { compareAnswers } from './answers';
+
 export function decode(bytes: ArrayBufferView | ArrayBufferLike): Packet {
   const view =
     'buffer' in bytes
