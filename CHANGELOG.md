@@ -1,5 +1,12 @@
 # dns-message
 
+## 1.1.0
+
+### Minor Changes
+
+- Add `compareAnswers` utility for lexicographic sorting
+  Submitted by [@kitten](https://github.com/kitten) (See [#15](https://github.com/kitten/dns-message/pull/15))
+
 ## 1.0.4
 
 ### Patch Changes
