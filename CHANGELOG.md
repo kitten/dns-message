@@ -1,5 +1,12 @@
 # dns-message
 
+## 1.0.4
+
+### Patch Changes
+
+- Remove sourcemaps' `sourcesContent` from published package
+  Submitted by [@kitten](https://github.com/kitten) (See [#13](https://github.com/kitten/dns-message/pull/13))
+
 ## 1.0.3
 
 ### Patch Changes
