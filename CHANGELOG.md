@@ -1,5 +1,12 @@
 # dns-message
 
+## 1.1.1
+
+### Patch Changes
+
+- Update rollup config for reduced output and exclude sources from sourcemaps
+  Submitted by [@kitten](https://github.com/kitten) (See [#17](https://github.com/kitten/dns-message/pull/17))
+
 ## 1.1.0
 
 ### Minor Changes
