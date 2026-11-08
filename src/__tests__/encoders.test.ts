@@ -72,6 +72,13 @@ describe('name', () => {
     );
   });
 
+  it('counts UTF-8 bytes for non-ASCII names', () => {
+    expect(name.bytes('잊기전에.local')).toBe(20);
+    expect(utils.toHex(encodeIntoBuffer(name, '잊기전에.local'))).toBe(
+      utils.toHex(`0c ${utils.u2h('잊기전에')} 05 ${utils.u2h('local')} 00`)
+    );
+  });
+
   it('supports label references', () => {
     const view = utils.view(
       `03 ${utils.u2h('def')} 00 03 ${utils.u2h('abc')} c000`

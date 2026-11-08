@@ -48,7 +48,7 @@ export const name: Encoder<string> = {
       default:
         if (str[0] === '.') length--;
         if (str[str.length - 1] === '.') length--;
-        length += str.replace(/\\\./g, '.').length;
+        length += utf8ByteLength(str.replace(/\\\./g, '.'));
         if (length > NAME_LIMIT)
           throw new RangeError(
             `Name "${str}" is above ${NAME_LIMIT} byte limit.`
